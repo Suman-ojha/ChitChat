@@ -12,7 +12,11 @@ const fileUpload = require('express-fileupload');
 
 dotenv.config();
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin :[''],
+    methods:['POST','GET','PUT','DELETE'],
+    credentials:true
+}));
 
 const hostname = '127.0.0.1';
 const port = process.env.PORT;
