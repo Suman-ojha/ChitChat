@@ -49,8 +49,7 @@ app.use('/api/message', messageRoutes);
 
 
 
-app.use(notFound)
-app.use(errorHandler);
+
 app.use(fileUpload({
     useTempFiles: true
 }))
@@ -63,7 +62,8 @@ app.get('/', (req, res) => {
 app.get('/api', (req, res) => {
     res.status(200).send("hello world");
 })
-
+app.use(notFound)
+app.use(errorHandler);
 
 
 const server = app.listen(port, hostname, () => {
