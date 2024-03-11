@@ -21,6 +21,45 @@ const allMessages = asyncHandler(async (req, res) => {
     }
 });
 
+// const allMessages = asyncHandler(async (req, res) => {
+//     try {
+//         const messages = await Message.aggregate([
+//             { $match: { chat: mongoose.Types.ObjectId(req.params.chatId) } },
+//             {
+//                 $lookup: {
+//                     from: "users",
+//                     localField: "sender",
+//                     foreignField: "_id",
+//                     as: "sender"
+//                 }
+//             },
+//             {
+//                 $lookup: {
+//                     from: "chats",
+//                     localField: "chat",
+//                     foreignField: "_id",
+//                     as: "chat"
+//                 }
+//             },
+//             { $unwind: "$sender" },
+//             { $unwind: "$chat" },
+//             {
+//                 $project: {
+//                     _id: 1,
+//                     text: 1,
+//                     sender: { name: 1, pic: 1, email: 1 },
+//                     chat: 1
+//                 }
+//             }
+//         ]);
+        
+//         res.json(messages);
+//     } catch (error) {
+//         res.status(400);
+//         throw new Error(error.message);
+//     }
+// });
+
 //@description     Create New Message
 //@route           POST /api/Message/
 //@access          Protected
