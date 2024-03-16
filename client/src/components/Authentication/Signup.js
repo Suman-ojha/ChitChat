@@ -101,7 +101,7 @@ const Signup = () => {
                 },
             };
             console.log("picinsubmit====>",pics)
-            const { data } = await axios.post("api/user", { name, email, password, pics }, config);
+            const { data } = await axios.post("http://localhost:5000/api/user", { name, email, password, pics }, config);
             toast({
                 title: "Registratoin Successfull",
                 status: "success",
