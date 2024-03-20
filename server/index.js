@@ -15,17 +15,7 @@ const app = express();
 app.use(cors({
     origin: true,
 }))
-// const allowedOrigins = ['http://localhost:3000', 'https://yourfrontenddomain.com'];
-// app.use(cors({
-//     origin: function(origin, callback) {
-//       // Check if the origin is allowed
-//       if (!origin || allowedOrigins.includes(origin)) {
-//         callback(null, true);
-//       } else {
-//         callback(new Error('Not allowed by CORS'));
-//       }
-//     }
-//   }));
+
 const hostname = '127.0.0.1';
 const port = process.env.PORT;
 require('./db/dbConnection');
