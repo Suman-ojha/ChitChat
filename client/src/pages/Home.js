@@ -11,9 +11,13 @@ const Home = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('userInfo'));
-        if (user) {
-            navigate('/chats')
+        const user = localStorage.getItem('userInfo');
+        let val = JSON.parse(user);
+        if(val){
+
+            if (user) {
+                navigate('/chats')
+            }
         }
     }, [navigate]);
 
