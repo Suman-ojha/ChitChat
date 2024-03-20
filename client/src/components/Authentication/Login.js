@@ -18,6 +18,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const { setUser } = ChatState();
+  const basePath = "https://chit-chat-beta-nine.vercel.app"
 
   const submitHandler = async () => {
     setLoading(true);
@@ -41,10 +42,11 @@ const Login = () => {
       };
 
       const { data } = await axios.post(
-        "/api/user/login",
+        `${basePath}/api/user/login`,
         { email, password },
         config
       );
+      console.log(data)
 
       toast({
         title: "Login Successful",
