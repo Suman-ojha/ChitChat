@@ -22,8 +22,11 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const user = await User.create({ name, email, password: hashedPassword, pic : pics }); // Save hashed password
 
+
     if (user) {
-        res.status(201).json({
+        res.status(201).send({
+            status :"success",
+            message :"User Registered Successfully.!",
             _id: user._id,
             name: user.name,
             email: user.email,
@@ -64,21 +67,41 @@ const authUser = asyncHandler(async (req, res) => {
 
 //  /api/user?search=suman
 const allUsers = asyncHandler(async (req, res) => {
-    const searchQuery = req.query.search ? {
-        $or: [
-            { name: { $regex: req.query.search, $options: "i" } },
-            { email: { $regex: req.query.search, $options: "i" } },
-        ],
-    } : {};
+    try {
+        // console.log('in all');
+        const searchQuery = buildSearchQuery(req.query.search, req.user._id);
+        
+        if (!req.query.search) {
+            // If no search term is provided, return an empty array
+            return res.status(200).send([]);
+        }
+        const users = await findUsers(searchQuery);
+        res.status(200).send(users);
+    } catch (error) {
+        res.status(500).send({ message: "Internal Server Error" });
+    }
+});
 
-    const users = await User.find({
-        $and: [
-            searchQuery,
-            { _id: { $ne: req.user._id } }
-        ]
-    });
-    res.status(200).send(users);
-})
+// Function to build the search query
+const buildSearchQuery = (searchTerm, userId) => {
+    if (!searchTerm) {
+        return { _id: { $ne: userId }, name: { $exists: true, $ne: null } };
+    }
+
+    return {
+        $or: [
+            { name: { $regex: searchTerm, $options: "i" } },
+            { email: { $regex: searchTerm, $options: "i" } },
+        ],
+    };
+};
+
+
+// Function to find users based on the search query
+const findUsers = async (searchQuery) => {
+    return await User.find(searchQuery);
+};
+
 
 
 

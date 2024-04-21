@@ -11,10 +11,12 @@ const { protect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+router.get("/" , protect, allUsers);
+router.post("/" , registerUser);
+router.post("/login", authUser);
+// router.route('').post(registerUser).get(protect, allUsers);
+// // router.route('/login').post(authUser); // or the same line can also be written be like:    router.post('/login', authUser);
 
-router.route('').post(registerUser).get(protect, allUsers);
-// router.route('/login').post(authUser); // or the same line can also be written be like:    router.post('/login', authUser);
-
-router.post('/login', authUser);     
+// router.post('/login', authUser);     
 
 module.exports = router;

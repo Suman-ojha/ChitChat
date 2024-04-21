@@ -34,28 +34,28 @@ const SideDrawer = () => {
     const navigate = useNavigate();
 
     const logOutHandler = () => {
-        localStorage.removeItem("userInfo");
+        localStorage?.removeItem("userInfo");
         navigate('/');
     }
 
     const toast = useToast();
     const handelSearch = async () => {
-        if (!search) {
-            toast({
-                title: "Please Etner Something in Search Box",
-                status: "warning",
-                duretion: 5000,
-                isClosable: true,
-                position: 'top-left'
-            });
-            return;
-        }
+        // if (!search) {
+        //     toast({
+        //         title: "Please Enter Something in Search Box",
+        //         status: "warning",
+        //         duretion: 5000,
+        //         isClosable: true,
+        //         position: 'top-left'
+        //     });
+        //     return;
+        // }
         try {
             setLoading(true);
 
             const config = {
                 headers: {
-                    Authorization: `Bearer ${user.token}`,
+                    Authorization: `Bearer ${user?.token}`,
                 },
             };
             const { data } = await axios.get(`api/user?search=${search}`, config);
@@ -81,19 +81,19 @@ const SideDrawer = () => {
             const config = {
                 headers: {
                     "Content-type": "application/json",
-                    Authorization: `Bearer ${user.token}`,
+                    Authorization: `Bearer ${user?.token}`,
                 },
             };
             const { data } = await axios.post(`/api/chat`, { userId }, config);
 
-            if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
+            if (!chats.find((c) => c?._id === data?._id)) setChats([data, ...chats]);
             setSelectedChat(data);
             setLoadingChat(false);
             onClose();
         } catch (error) {
             toast({
                 title: "Error fetching the chat",
-                description: error.message,
+                description: error?.message,
                 status: "error",
                 duration: 5000,
                 isClosable: true,
@@ -134,20 +134,20 @@ const SideDrawer = () => {
                                 <MenuItem
                                     key={notif._id}
                                     onClick={() => {
-                                        setSelectedChat(notif.chat);
+                                        setSelectedChat(notif?.chat);
                                         setNotifications(notifications.filter((n) => n !== notif));
                                     }}
                                 >
                                     {notif.chat.isGroupChat
-                                        ? `New Message in ${notif.chat.chatName}`
-                                        : `New Message from ${getSender(user, notif.chat.users)}`}
+                                        ? `New Message in ${notif?.chat?.chatName}`
+                                        : `New Message from ${getSender(user, notif?.chat?.users)}`}
                                 </MenuItem>
                             ))}
                         </MenuList>
                     </Menu>
                     <Menu>
                         <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                            <Avatar size="sm" cursor="pointer" name={user.name} src={user.pic} />
+                            <Avatar size="sm" cursor="pointer" name={user?.name} src={user?.pic} />
                         </MenuButton>
                         <MenuList>
                             <ProfileModel user={user}>
@@ -183,9 +183,9 @@ const SideDrawer = () => {
                         ) : (
                             searchResult?.map((user) => (
                                 <UserListItem
-                                    key={user._id}
+                                    key={user?._id}
                                     user={user}
-                                    handleFunction={() => accessChat(user._id)}
+                                    handleFunction={() => accessChat(user?._id)}
 
                                 />
                             ))

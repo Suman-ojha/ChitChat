@@ -18,7 +18,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
 
 
   const handleRemove = async (user1) => {
-    if (selectedChat.groupAdmin._id !== user._id && user1._id !== user._id) {
+    if (selectedChat?.groupAdmin?._id !== user?._id && user1?._id !== user?._id) {
       toast({
         title: "Only admins can remove someone!",
         status: "error",
@@ -40,20 +40,20 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
       const { data } = await axios.put(
         `/api/chat/groupremove`,
         {
-          chatId: selectedChat._id,
-          userId: user1._id,
+          chatId: selectedChat?._id,
+          userId: user1?._id,
         },
         config
       );
 
-      user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
+      user1?._id === user?._id ? setSelectedChat() : setSelectedChat(data);
       setFetchAgain(!fetchAgain);
       fetchMessages();
       setLoading(false);
     } catch (error) {
       toast({
         title: "Error Occured!",
-        description: error.response.data.message,
+        description: error?.response?.data?.message,
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -71,19 +71,19 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
       setRenameLoading(true);
       const config = {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${user?.token}`,
         },
       };
       const { data } = await axios.put(
         `/api/chat/rename`,
         {
-          chatId: selectedChat._id,
+          chatId: selectedChat?._id,
           chatName: groupChatName,
         },
         config
       );
 
-      console.log(data._id);
+      console.log(data?._id);
       // setSelectedChat("");
       setSelectedChat(data);
       setFetchAgain(!fetchAgain);
@@ -91,7 +91,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
     } catch (error) {
       toast({
         title: "Error Occured!",
-        description: error.response.data.message,
+        description: error?.response?.data?.message,
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -112,7 +112,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
       setLoading(true);
       const config = {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${user?.token}`,
         },
       };
       const { data } = await axios.get(`/api/user?search=${search}`, config);
@@ -133,7 +133,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
   };
 
   const handleAddUser = async (user1) => {
-    if (selectedChat.users.find((u) => u._id === user1._id)) {
+    if (selectedChat?.users.find((u) => u?._id === user1?._id)) {
       toast({
         title: "User Already in group!",
         status: "error",
@@ -144,7 +144,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
       return;
     }
 
-    if (selectedChat.groupAdmin._id !== user._id) {
+    if (selectedChat?.groupAdmin?._id !== user?._id) {
       toast({
         title: "Only admins can add someone!",
         status: "error",
@@ -159,14 +159,14 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
       setLoading(true);
       const config = {
         headers: {
-          Authorization: `Bearer ${user.token}`,
+          Authorization: `Bearer ${user?.token}`,
         },
       };
       const { data } = await axios.put(
         `/api/chat/groupadd`,
         {
-          chatId: selectedChat._id,
-          userId: user1._id,
+          chatId: selectedChat?._id,
+          userId: user1?._id,
         },
         config
       );
@@ -177,7 +177,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
     } catch (error) {
       toast({
         title: "Error Occured!",
-        description: error.response.data.message,
+        description: error?.response?.data?.message,
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -202,17 +202,17 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
             display="flex"
             justifyContent="center"
           >
-            {selectedChat.chatName}
+            {selectedChat?.chatName}
           </ModalHeader>
 
           <ModalCloseButton />
           <ModalBody display="flex" flexDir="column" alignItems="center">
             <Box w="100%" display="flex" flexWrap="wrap" pb={3}>
-              {selectedChat.users.map((u) => (
+              {selectedChat?.users.map((u) => (
                 <UserBadgeItem
-                  key={u._id}
+                  key={u?._id}
                   user={u}
-                  admin={selectedChat.groupAdmin}
+                  admin={selectedChat?.groupAdmin}
                   handleFunction={() => handleRemove(u)}
                 />
               ))}
@@ -247,7 +247,7 @@ const UpdateGroupChatModal = ({ fetchMessages, fetchAgain, setFetchAgain }) => {
             ) : (
               searchResult?.map((user) => (
                 <UserListItem
-                  key={user._id}
+                  key={user?._id}
                   user={user}
                   handleFunction={() => handleAddUser(user)}
                 />

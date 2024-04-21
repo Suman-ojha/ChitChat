@@ -1,8 +1,16 @@
 export const getSender = (loggedUser, users) => {
+    if (!users || !Array.isArray(users) || users.length === 0) {
+        return ""; // Return an empty string or handle the case appropriately
+    }
+
     return users[0]._id === loggedUser._id ? users[1].name : users[0].name;
 };
 
+
 export const getSenderFull = (loggedUser, users) => {
+    if (!users || !Array.isArray(users) || users.length < 2) {
+        return null; // or handle the case appropriately
+    }
     return users[0]._id === loggedUser._id ? users[1] : users[0];
 };
 

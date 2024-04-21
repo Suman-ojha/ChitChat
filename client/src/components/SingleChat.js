@@ -13,12 +13,13 @@ import animationData from '../animation/typing.json'
 
 
 import io from 'socket.io-client';
-const ENDPOINT = "https://sanvad-app.onrender.com/";
+const ENDPOINT = "http://localhost:5000/";
+// const ENDPOINT = "https://sanvad-app.onrender.com/";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const [messages, setMessages] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false); 
     const [newMessage, setNewMessage] = useState("");
     const [socketConnected, setSocketConnected] = useState(false);
     const [typing, setTyping] = useState(false);
@@ -41,21 +42,21 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         try {
             const config = {
                 headers: {
-                    Authorization: `Bearer ${user.token}`,
+                    Authorization: `Bearer ${user?.token}`,
                 },
             };
 
             setLoading(true);
 
             const { data } = await axios.get(
-                `/api/message/${selectedChat._id}`,
+                `/api/message/${selectedChat?._id}`,
                 config
             );
             // console.log(messages);
             setMessages(data);
             setLoading(false);
 
-            socket.emit('join chat', selectedChat._id);
+            socket.emit('join chat', selectedChat?._id);
 
         } catch (error) {
             toast({
@@ -89,7 +90,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     useEffect(() => {
         socket.on("message recieved", (newMessageRecieved) => {
             // if chat is not selected or doesn't match current chat
-            if (!selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id) {
+            if (!selectedChatCompare || selectedChatCompare?._id !== newMessageRecieved?.chat?._id) {
                 if (!notifications.includes(newMessageRecieved)) {
                     setNotifications([newMessageRecieved, ...notifications]);
                     setFetchAgain(!fetchAgain);
@@ -101,7 +102,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     });         //the useEffect render every time when any cahnges ocurs.
 
     const sendMessage = async (event) => {
-        socket.emit("stop typing", selectedChat._id);
+        socket.emit("stop typing", selectedChat?._id);
         try {
             const config = {
                 headers: {
@@ -178,14 +179,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                         {/* {messages && */}
                         {(!selectedChat.isGroupChat ? (
                             <>
-                                {getSender(user, selectedChat.users)}
+                                {getSender(user, selectedChat?.users)}
                                 <ProfileModel
-                                    user={getSenderFull(user, selectedChat.users)}
+                                    user={getSenderFull(user, selectedChat?.users)}
                                 />
                             </>
                         ) : (
                             <>
-                                {selectedChat.chatName.toUpperCase()}
+                                {selectedChat?.chatName.toUpperCase()}
                                 <UpdateGroupChatModal
                                     fetchMessages={fetchMessages}
                                     fetchAgain={fetchAgain}

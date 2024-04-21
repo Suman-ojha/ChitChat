@@ -22,7 +22,7 @@ const MyChats = ({ fetchAgain }) => {
             };
 
             const { data } = await axios.get("http://localhost:5000/api/chat", config);
-            // console.log(data);
+            // console.log(data , "<<<----data");
             setChats(data);
         } catch (error) {
             toast({
@@ -41,6 +41,8 @@ const MyChats = ({ fetchAgain }) => {
         fetchChats();
         // eslint-disable-next-line
     }, [fetchAgain]);
+
+    // console.log( chats[0]?.usersData , "<<--chat-data")
 
     return (
         <Box
@@ -84,7 +86,7 @@ const MyChats = ({ fetchAgain }) => {
                 borderRadius="lg"
                 overflowY="hidden"
             >
-                {chats ? (
+                {chats.length>0 ? (
                     <Stack overflowY="scroll">
                         {chats.map((chat) => (
                             <Box
@@ -95,19 +97,19 @@ const MyChats = ({ fetchAgain }) => {
                                 px={3}
                                 py={2}
                                 borderRadius="lg"
-                                key={chat._id}
+                                key={chat?._id}
                             >
                                 <Text>
                                     {!chat.isGroupChat
-                                        ? getSender(loggedUser, chat.users)
-                                        : chat.chatName}
+                                        ? getSender(loggedUser, chat?.usersData)
+                                        : chat?.chatName}
                                 </Text>
-                                {chat.latestMessage && (
+                                {chat?.latestMessageData && chat?.latestMessageData.length > 0 && (
                                     <Text fontSize="xs">
-                                        <b>{chat.latestMessage.sender.name} : </b>
-                                        {chat.latestMessage.content.length > 50
-                                            ? chat.latestMessage.content.substring(0, 51) + "..."
-                                            : chat.latestMessage.content}
+                                        <b>{chat?.latestMessageData[0]?.senderData[0]?.name} : </b>
+                                        {chat?.latestMessageData[0]?.content.length > 50
+                                            ? chat?.latestMessageData[0]?.content.substring(0, 51) + "..."
+                                            : chat?.latestMessageData[0]?.content}
                                     </Text>
                                 )}
                             </Box>

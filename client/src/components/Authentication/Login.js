@@ -42,7 +42,7 @@ const Login = () => {
       };
 
       const { data } = await axios.post(
-        `${basePath}/api/user/login`,
+        `/api/user/login`,
         { email, password },
         config
       );

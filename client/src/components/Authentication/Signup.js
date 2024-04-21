@@ -31,7 +31,7 @@ const Signup = () => {
             setLoading(false);
             return;
         }
-        console.log("File-->",file);
+        // console.log("File-->",file);
         if (file.type === "image/jpeg" || file.type === "image/png") {
             const data = new FormData();
             data.append("file", file);
@@ -48,7 +48,7 @@ const Signup = () => {
                 if (!response.ok) {
                     throw new Error("Failed to upload image");
                 }
-    
+                console.log(response , "<<----response")
                 const responseData = await response.json();
                 // console.log("urlData=====>", responseData.url)
                 setPic(responseData.url.toString());

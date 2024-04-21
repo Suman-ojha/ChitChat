@@ -26,7 +26,6 @@ app.use('/api/chat', chatRoutes);
 app.use('/api/message', messageRoutes);
 
 
-
 // --------------------------deployment(production)------------------------------
 
 // const __dirname1 = path.resolve();

@@ -11,7 +11,7 @@ const Home = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        const user = localStorage.getItem('userInfo');
+        const user = localStorage?.getItem('userInfo');
         let val = JSON.parse(user);
         if(val){
 
@@ -36,7 +36,7 @@ const Home = () => {
                 borderWidth="1px"
                 text="black"
             >
-                <Text fontSize={"4xl"} fontWeight="bold">Sanvad App</Text>
+                <Text fontSize={"4xl"} fontWeight="bold">Chit-chat App</Text>
             </Box>
             <Box bg={"white"} w={"100%"} borderRadius="lg" borderWidth="1px">
                 <Tabs variant='soft-rounded'>

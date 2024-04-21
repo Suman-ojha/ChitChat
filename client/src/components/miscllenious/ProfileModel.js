@@ -13,6 +13,9 @@ import React from 'react'
 
 const ProfileModel = ({ user, children }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    // console.log(isOpen ,  "<<<dat1--")
+    // console.log( onOpen  , "<<<dat2--")
+    // console.log( onClose , "<<<dat3--")
     return (
         <>
             {
@@ -31,19 +34,19 @@ const ProfileModel = ({ user, children }) => {
                         display="flex"
                         justifyContent="center"
                         textTransform="capitalize"
-                    >{user.name}</ModalHeader>
+                    >{user?.name}</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody display="flex" flexDirection="column" justifyContent="center" alignItems="center">
                         <Image
                             borderRadius="full"
                             boxSize="150px"
-                            src={user.pic}
-                            alt={user.name}
+                            src={user?.pic}
+                            alt={user?.name}
                         />
                         <Text
                             fontSize={{ base: "28px", md: "30px" }}
                             fontFamily="work sans"
-                        >email : <span style={{ color: "gray" }}>{user.email}</span></Text>
+                        >email : <span style={{ color: "gray" }}>{user?.email}</span></Text>
                     </ModalBody>
 
                     <ModalFooter>

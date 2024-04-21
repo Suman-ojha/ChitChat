@@ -7,27 +7,60 @@ const User = require("../models/userModel");
 //@access          Protected
 const accessChat = asyncHandler(async (req, res) => {
     const { userId } = req.body;
+    // console.log(userId, "user")
 
     if (!userId) {
         console.log("UserId param not sent with request");
         return res.sendStatus(400);
     }
 
-    const isChat = await Chat.find({
-        isGroupChat: false,
-        $and: [
-            { users: { $elemMatch: { $eq: req.user._id } } },
-            { users: { $elemMatch: { $eq: userId } } },
-        ],
-    })
-        .populate("users", "-password")
-        .populate("latestMessage");
+    const isChat = await Chat.aggregate([
+        {
+            $match: {
+                isGroupChat: false,
+                $and: [
+                    { users: { $elemMatch: { $eq: req.user._id } } },
+                    { users: { $elemMatch: { $eq: userId } } },
+                ],
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "users",
+                foreignField: "_id",
+                as: "usersData"
+            }
+        },
+        {
+            $lookup: {
+                from: "messages",
+                localField: "latestMessage",
+                foreignField: "_id",
+                as: "latestMessageData"
+            }
+        },
+        {
+            $unwind: "$latestMessageData"
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "latestMessageData.sender",
+                foreignField: "_id",
+                as: "latestMessageData.senderData"
+            }
+        },
+        {
+            $group: {
+                _id: "$_id",
+                usersData: { $first: "$usersData" },
+                latestMessageData: { $push: "$latestMessageData" }
+            }
+        }
+    ]);
 
-    isChat = await User.populate(isChat, {
-        path: "latestMessage.sender",
-        select: "name pic email",
-        // strictPopulate: false,
-    });
+    console.log(isChat,"<<<--chat")
 
     if (isChat.length > 0) {
         res.send(isChat[0]);
@@ -53,28 +86,79 @@ const accessChat = asyncHandler(async (req, res) => {
 });
 
 
+
 //@description     Fetch all chats for a user
 //@route           GET /api/chat/
 //@access          Protected
 const fetchChats = asyncHandler(async (req, res) => {
+    console.log(req.user)
     try {
-        Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
-            .populate("users", "-password")
-            .populate("groupAdmin", "-password")
-            .populate("latestMessage")
-            .sort({ updatedAt: -1 })
-            .then(async (results) => {
-                results = await User.populate(results, {
-                    path: "latestMessage.sender",
-                    select: "name pic email",
-                });
-                res.status(200).send(results);
-            });
+        const results = await Chat.aggregate([
+            {
+                $match: {
+                    users: { $elemMatch: { $eq: req.user._id } }
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "users",
+                    foreignField: "_id",
+                    as: "usersData"
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "groupAdmin",
+                    foreignField: "_id",
+                    as: "groupAdminData"
+                }
+            },
+            {
+                $lookup: {
+                    from: "messages",
+                    localField: "latestMessage",
+                    foreignField: "_id",
+                    as: "latestMessageData"
+                }
+            },
+            {
+                $unwind: "$latestMessageData"
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "latestMessageData.sender",
+                    foreignField: "_id",
+                    as: "latestMessageData.senderData"
+                }
+            },
+            {
+                $group: {
+                    _id: "$_id",
+                    usersData: { $first: "$usersData" },
+                    groupAdminData: { $first: "$groupAdminData" },
+                    latestMessageData: { $push: "$latestMessageData" }
+                }
+            },
+            {
+                $sort: { updatedAt: -1 }
+            }
+        ]);
+
+        res.status(200).send(results);
     } catch (error) {
-        res.status(400);
-        throw new Error(error.message);
+        console.log(error?.message)
+        return res.status(200).send({
+            status :"error",
+            message : error?.message ?? 'something went wrong!!'
+        })
+        // res.status(400);
+        // throw new Error(error.message);
     }
 });
+
 
 
 //@description     Create New Group Chat
